@@ -64,7 +64,8 @@ def onpolicy_main():
             visionnet_input = envs.venv.venv.envs[0].env.env.env.visionnet_input
             nn = envs.venv.venv.envs[0].env.env.env.nn
             env_name = envs.venv.venv.envs[0].env.env.env.xml_path
-        dummy_obs = np.zeros(nn*2+3)
+        # dummy_obs = np.zeros(nn*2+3)
+        dummy_obs = np.zeros(23)
     else:
         dummy_obs = envs.observation_space
         visionnet_input = None
@@ -433,7 +434,7 @@ if __name__ == "__main__":
         variant = dict(
             algorithm=args.algo,
             algorithm_kwargs=dict(
-                num_epochs=3000,
+                num_epochs=1500,
                 num_eval_steps_per_epoch=512,
                 num_trains_per_train_loop=1000,
                 num_expl_steps_per_train_loop=512,

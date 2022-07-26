@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="3dof" default="false"/>
+
+  <group if="$(arg 3dof)">
+          <node pkg="doorgym" type="inference_3dof_pull.py" name="husky_ur5_3dof_pull_node"/>
+  </group>
+
+  <group unless="$(arg 3dof)">
+          <node pkg="doorgym" type="inference_pull.py" name="husky_ur5_pull_node"/>
+  </group>
+
+
+</launch>
