@@ -7,7 +7,7 @@ I released docker images for developers that can modify other packages on this a
 ### Step1. Clone repo
 
 ```
-git clone --recursive git@github.com:kuolunwang/DoorGym.git
+git clone --recursive git@github.com:ARG-NCTU/DoorGym.git
 ```
 
 ### Step2. Docker run
