@@ -124,3 +124,6 @@ params_logs/
 *.txt
 devel/
 .catkin_workspace
+
+*.zip
+envs/doorenv.egg-info
