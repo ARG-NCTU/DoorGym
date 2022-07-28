@@ -31,7 +31,7 @@ source docker_join.sh
 Execute the compile script at first time, then the other can ignore this step. 
 
 ```
-source catkine_make.sh
+source catkin_make.sh
 ```
 
 ### Step5. Setup environment
@@ -73,6 +73,7 @@ python3 world_generator.py --knob-type pull --robot-type husky-ur5
 Check the model by running the mujoco simulator
 
 ```
+source environment.sh
 cd ~/.mujoco/mujoco210/bin
 ./simulate [environment path]
 ```
