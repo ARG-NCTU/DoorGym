@@ -31,6 +31,7 @@ source docker_join.sh
 Execute the compile script at first time, then the other can ignore this step. 
 
 ```
+source install.sh
 source catkin_make.sh
 ```
 

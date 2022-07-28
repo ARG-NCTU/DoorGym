@@ -60,5 +60,5 @@ docker run \
     --privileged \
     --security-opt seccomp=unconfined \
     $DOCKER_OPTS \
-    kuolunwang/doorgym:latest \
+    argnctu/doorgym:latest \
     $BASH_OPTION

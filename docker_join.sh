@@ -2,7 +2,7 @@
 
 BASH_OPTION=bash
 
-IMG=kuolunwang/doorgym:latest
+IMG=argnctu/doorgym:latest
 
 xhost +
 containerid=$(docker ps -aqf "ancestor=${IMG}") && echo $containerid
