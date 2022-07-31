@@ -54,7 +54,7 @@ docker run \
     -v "/dev:/dev" \
     -v "/var/run/docker.sock:/var/run/docker.sock" \
     --workdir "/home/kl/DoorGym" \
-    --user "root:root" \
+    --user "kl:kl" \
     --name gazebo \
     --network host \
     --privileged \
