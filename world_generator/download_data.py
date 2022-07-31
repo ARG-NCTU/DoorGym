@@ -16,14 +16,8 @@ download("1hlU2BNlXSieOb4UrQiPJIpoSbivD-6Y_", "husky-ur5-pull")
 download("1sYJorv2KzqA2EvgjIj_ST09ZfKuyp1re", "husky-ur5-push")
 download("1a3NLFWjyF7ClZxxqEYEIgouk57mDMicU", "ur5-pull")
 download("1ri9udFVgK0uw3RPd6l4Ru_doTlWfmu9U", "ur5-push")
+download("1_FZJiXjkDQpzjGNa5PpllxU7pR7ApXSn", "pullkonbs")
 
-# door model
-# os.makedirs("door")
-# download('1_FZJiXjkDQpzjGNa5PpllxU7pR7ApXSn', "pullknobs")
-# dataset_url = 'https://drive.google.com/uc?id=' + 
-# dataset_name = "./pullknobs.zip"
-# gdown.download(dataset_url, output = dataset_name, quiet=False)
-# zip_file = ZipFile(dataset_name)
-# zip_file.extractall() # depends on how to zip it
-# zip_file.close()
-# shutil.move("./pullknobs", "./door/pullknobs")
+# move door model
+os.makedirs("door")
+shutil.move("./pullknobs", "./door/pullknobs")
