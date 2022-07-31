@@ -19,7 +19,7 @@ download("1ri9udFVgK0uw3RPd6l4Ru_doTlWfmu9U", "ur5-push")
 
 # door model
 # os.makedirs("door")
-# download('1_FZJiXjkDQpzjGNa5PpllxU7pR7ApXSn', "pullknobs")
+# download('1yGitxD57Jb9BSryfjBlGJuk1ultCJAmg', "pullknobs")
 # dataset_url = 'https://drive.google.com/uc?id=' + 
 # dataset_name = "./pullknobs.zip"
 # gdown.download(dataset_url, output = dataset_name, quiet=False)
