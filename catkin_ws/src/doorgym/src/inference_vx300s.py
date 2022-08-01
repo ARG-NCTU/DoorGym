@@ -164,7 +164,7 @@ class Inference:
     def cb_collision_dof(self, msg):
         cnt = 0
         if self.collision_states == True:
-            if msg.states == [] and cnt > 1000:
+            if msg.states == [] and cnt > 2500:
                 self.collision_states = False
             else:
                 cnt += 1
@@ -177,7 +177,7 @@ class Inference:
 
     def cb_collision(self, msg):
         if self.collision_states == True:
-            if msg.states == [] and self.cnt > 1000:
+            if msg.states == [] and self.cnt > 2500:
                 self.collision_states = False
             else:
                 self.cnt += 1

@@ -31,7 +31,6 @@ source docker_join.sh
 Execute the compile script at first time, then the other can ignore this step. 
 
 ```
-source install.sh
 source catkin_make.sh
 ```
 
@@ -41,6 +40,14 @@ Make sure run this command when the terminal enter docker.
 
 ```
 source environment.sh
+```
+
+## Download goal.yaml
+
+Run below command to download goal.yaml before you inference all experiment.
+
+```
+python3 download.py
 ```
 
 ## Download dataset and knob model
