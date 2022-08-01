@@ -14,6 +14,10 @@
       <param name="method" value="$(arg method)"/>
     </node>
 
+    <node pkg="doorgym" type="record_trajectory.py" name="record_trajectory_node" >
+      <param name="method" value="$(arg method)"/>
+    </node>
+
   </group>
 
   <group unless="$(arg state)">

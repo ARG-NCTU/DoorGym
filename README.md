@@ -42,6 +42,14 @@ Make sure run this command when the terminal enter docker.
 source environment.sh
 ```
 
+## Download goal.yaml
+
+Run below command to download goal.yaml before you inference all experiment.
+
+```
+python3 download.py
+```
+
 ## Download dataset and knob model
 
 This dataset is required for both training and evaluation, you can follow below command to download these. 

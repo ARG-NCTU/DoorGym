@@ -127,3 +127,10 @@ devel/
 
 *.zip
 envs/doorenv.egg-info
+*.yaml
+world_generator/door/
+world_generator/husky-ur5-pull/
+world_generator/husky-ur5-push/
+world_generator/ur5-pull/
+world_generator/ur5-push/
+model/

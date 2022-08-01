@@ -34,6 +34,7 @@ from curl_navi import DoorGym_gazebo_utils
 import yaml
 
 pub_info = rospy.Publisher('/state', String, queue_size=10)
+finish_info = rospy.Publisher('/finish', String, queue_size=10)
 goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
 
 my_dir = os.path.abspath(os.path.dirname(__file__))
@@ -50,7 +51,7 @@ total = len(goal_totoal)
 success = 0
 coi = 0
 
-begin = time.time()
+begin = 0
 
 class loop(smach.State):
     def __init__(self):
@@ -71,8 +72,10 @@ class loop(smach.State):
             # output result 
             d = {'success_rate':s_r, "fail_rate":f_r, "average_coillision":a_c}
 
-            with open(os.path.join(my_dir,"../" + method + ".yaml"), "w") as f:
+            with open(os.path.join(my_dir,"../" + method + "_result.yaml"), "w") as f:
                 yaml.dump(d, f)
+
+            finish_info.publish("end")
             
             rospy.loginfo('End')
             return 'loop_done'
@@ -88,6 +91,10 @@ class init(smach.State):
         self.set_door_srv = rospy.ServiceProxy("/gazebo/set_model_configuration", SetModelConfiguration)
 
     def execute(self, userdata):
+
+        global begin
+
+        begin = time.time()
 
         print("init")
         rospy.loginfo("init position")
@@ -123,7 +130,7 @@ class nav_to_door(smach.State):
         smach.State.__init__(self, outcomes=["navigating"])
         
     def execute(self, userdata):
-
+        finish_info.publish("start")
         pub_info.publish("nav")
         return 'navigating'
 
@@ -233,7 +240,7 @@ class open_door(smach.State):
         res = self.get_door_angle_srv(req)
 
         # husky ur5 push paramter
-        self.joint_value.joint_value[0] += joint_action[2] * -0.009
+        self.joint_value.joint_value[0] += joint_action[2] * 0.004
         self.joint_value.joint_value[1] += joint_action[3] * 0.004
         self.joint_value.joint_value[2] += joint_action[4] * 0.004
         self.joint_value.joint_value[3] += joint_action[5] * 0.001
@@ -247,8 +254,8 @@ class open_door(smach.State):
         t = Twist()
 
         # husky ur5 push parameter
-        t.linear.x = joint_action[0] * 0.03
-        t.angular.z = joint_action[1] * 0.015
+        t.linear.x = abs(joint_action[0]) * 0.05
+        t.angular.z = joint_action[1] * 0.002
 
         self.husky_cmd_pub.publish(t)
 
@@ -284,6 +291,8 @@ class open_door(smach.State):
             self.cnt = 0
 
     def get_odom(self, msg):
+
+        trans = [0.0]
 
         try:
             trans, rot = self.listener.lookupTransform("/base_link", "/map", rospy.Time(0))
@@ -329,6 +338,8 @@ class open_door(smach.State):
         req.link_name = "hinge_door_0::knob"
 
         pos = self.get_knob_srv(req)
+
+        trans = [0.0, 0.0, 0.0]
 
         try:
             trans, _ = self.listener.lookupTransform("/map", "/object_link", rospy.Time(0))
@@ -406,10 +417,12 @@ class is_goal(smach.State):
 
         if(dis < 0.8):
             pub_info.publish("stop")
+            finish_info.publish("finished")
             success += 1
             count += 1
             return 'navigated'
         elif(time.time() - begin >= 180):
+            finish_info.publish("finished")
             count += 1
             return 'navigated'
         else:
