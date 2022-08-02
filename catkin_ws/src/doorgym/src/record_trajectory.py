@@ -12,6 +12,7 @@ class record:
 
         self.method = rospy.get_param("~method")
         self.pull = rospy.get_param("~pull", False)
+        self.box = rospy.get_param("~box", False)
 
         self.timer = rospy.Timer(rospy.Duration(0.5), self.re_tra)
         self.fin_sub = rospy.Subscriber("/finish", String, self.fin_cb, queue_size = 1)
@@ -33,14 +34,20 @@ class record:
 
         if(msgs.data == "end"):
 
+            obj = ""
+
             if(self.pull):
                 action = "_pull"
+                if(self.box):
+                    obj = "_box"
+                else:
+                    obj = "_cardboard"
             else:
                 action = ""
 
             tra = {'environment' : "room_door", "policy": self.method, "trajectories" : self.total_traj}
 
-            with open(os.path.join(self.my_dir,"../../../../Data/"+ self.method + action + "_trajectory.yaml"), "w") as f:
+            with open(os.path.join(self.my_dir,"../../../../Data/"+ self.method + obj + action + "_trajectory.yaml"), "w") as f:
 
                 yaml.dump(tra, f)
 

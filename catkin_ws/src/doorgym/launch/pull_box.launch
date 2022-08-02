@@ -6,13 +6,14 @@
   <arg name="box" default="true"/>
   <arg name="pull" default="true"/>
 
-  <node pkg="doorgym" type="state_machine_ex3.py" name="experiment3_node">
+  <node pkg="doorgym" type="state_machine_ex3.py" name="experiment3_node" output="screen">
         <param name="box" value="$(arg box)"/>
         <param name="method" value="$(arg method)"/>
   </node>
 
   <node pkg="doorgym" type="record_trajectory.py" name="record_trajectory_node" >
       <param name="method" value="$(arg method)"/>
+      <param name="box" value="$(arg box)"/>
       <param name="pull" value="$(arg pull)"/>
   </node>
 

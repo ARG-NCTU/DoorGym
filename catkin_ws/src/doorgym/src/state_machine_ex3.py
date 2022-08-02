@@ -71,10 +71,15 @@ class loop(smach.State):
             f_r = 100 - s_r
             a_c = coi / total
 
+            if(box):
+                obj = "_box"
+            else:
+                obj = "_cardboard"
+
             # output result 
             d = {'success_rate':s_r, "fail_rate":f_r, "average_coillision":a_c}
 
-            with open(os.path.join(my_dir,"../../../../Data/" + method + "_pull_result.yaml"), "w") as f:
+            with open(os.path.join(my_dir,"../../../../Data/" + method + obj + "_pull_result.yaml"), "w") as f:
                 yaml.dump(d, f)
 
             finish_info.publish("end")
@@ -100,21 +105,22 @@ class init(smach.State):
 
         rospy.loginfo("init position")
 
-        # req = SetModelStateRequest()
-        req = ModelState()
-        req.model_name = 'robot'
-        req.pose.position.x = 9.0 
-        req.pose.position.y = 14.2
-        req.pose.position.z = 0.1323
-        req.pose.orientation.x = 0.0
-        req.pose.orientation.y = 0.0
-        req.pose.orientation.z = -0.707
-        req.pose.orientation.w = 0.707
-
-        # set robot
-        self.set_init_pose_srv(req)
-
         if(box):
+
+            # req = SetModelStateRequest()
+            req = ModelState()
+            req.model_name = 'robot'
+            req.pose.position.x = 9.0 
+            req.pose.position.y = 14.2
+            req.pose.position.z = 0.1323
+            req.pose.orientation.x = 0.0
+            req.pose.orientation.y = 0.0
+            req.pose.orientation.z = -0.707
+            req.pose.orientation.w = 0.707
+
+            # set robot
+            self.set_init_pose_srv(req)
+
             # set box position
             req = ModelState()
             req.model_name = 'pull_box'
@@ -129,6 +135,21 @@ class init(smach.State):
             # set box
             self.set_init_pose_srv(req)
         else:
+
+            # req = SetModelStateRequest()
+            req = ModelState()
+            req.model_name = 'robot'
+            req.pose.position.x = 9.0 
+            req.pose.position.y = 13.5
+            req.pose.position.z = 0.1323
+            req.pose.orientation.x = 0.0
+            req.pose.orientation.y = 0.0
+            req.pose.orientation.z = -0.707
+            req.pose.orientation.w = 0.707
+
+            # set robot
+            self.set_init_pose_srv(req)
+
             # set cardboard
             req = ModelState()
             req.model_name = 'pull_box'
@@ -457,8 +478,7 @@ class is_pull(smach.State):
             self.husky_cmd_pub.publish(t)
             self.arm_go_home()
             return 'pulled'
-        elif(time.time() - begin >= 180):
-            count += 1
+        elif(time.time() - begin >= 60):
             return 'pulled'
         else:
             return 'not_yet'
@@ -506,7 +526,8 @@ class is_goal(smach.State):
             success += 1
             count += 1
             return 'navigated'
-        elif(time.time() - begin >= 180):
+        elif(time.time() - begin >= 60):
+            pub_info.publish("stop")
             finish_info.publish("finished")
             count += 1
             return 'navigated'
