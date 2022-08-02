@@ -39,7 +39,7 @@ goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
 
 my_dir = os.path.abspath(os.path.dirname(__file__))
 # read yaml
-with open(os.path.join(my_dir,"../goal.yaml"), 'r') as f:
+with open(os.path.join(my_dir,"../../../../Data/goal.yaml"), 'r') as f:
     data = yaml.load(f)
 
 goal_totoal = data['goal']
@@ -72,7 +72,7 @@ class loop(smach.State):
             # output result 
             d = {'success_rate':s_r, "fail_rate":f_r, "average_coillision":a_c}
 
-            with open(os.path.join(my_dir,"../" + method + "_result.yaml"), "w") as f:
+            with open(os.path.join(my_dir,"../../../../Data/" + method + "_result.yaml"), "w") as f:
                 yaml.dump(d, f)
 
             finish_info.publish("end")
@@ -95,8 +95,6 @@ class init(smach.State):
         global begin
 
         begin = time.time()
-
-        print("init")
         rospy.loginfo("init position")
 
         # req = SetModelStateRequest()

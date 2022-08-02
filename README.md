@@ -42,17 +42,9 @@ Make sure run this command when the terminal enter docker.
 source environment.sh
 ```
 
-## Download goal.yaml
-
-Run below command to download goal.yaml before you inference all experiment.
-
-```
-python3 download.py
-```
-
 ## Download dataset and knob model
 
-This dataset is required for both training and evaluation, you can follow below command to download these. 
+This dataset is required for both training, you can follow below command to download these. 
 
 ```
 cd world_generator
@@ -88,9 +80,9 @@ cd ~/.mujoco/mujoco210/bin
 
 More detailed instruction [here](./world_generator)
 
-## Training and evaluation
+## Training
 
-Before ready for the above setting, then you can train a model or evaluate a pre-trained model. For the training and evaluation are need parameter setting, I arrange it and write a script that is easy to use.
+Before ready for the above setting, then you can train a model. For the training was need parameter setting, I arrange it and write a script that is easy to use.
 
 ### Training
 
@@ -106,23 +98,9 @@ Before ready for the above setting, then you can train a model or evaluate a pre
     source train_push.sh
   ```
 
-### Evaluation
+If you want to train baseline (DoorGym) or 6 joints environment, you need to edit training script.
 
-* Pull task
-
-  ```
-    source run_pull.sh
-  ```
-
-* Push task
-
-  ```
-    source run_push.sh
-  ```
-
-If you want to train or evaluation baseline (DoorGym) or 6 joints environment, you need to edit training and evaluation script.
-
-For the trainging or evaluation
+For the trainging
 
   Edit train_pull.sh (run_pull.sh) or train_push.sh (run_push.sh) parameter.
 

@@ -102,15 +102,15 @@ class Inference:
 
                 tra = {'environment' : "room_door", "policy": name + ".pt", "trajectories" : self.total_tra}
 
-                with open(os.path.join(self.my_dir,"../"+ name +"_trajectory.yaml"), "w") as f:
+                with open(os.path.join(self.my_dir,"../../../../Data/"+ name +"_trajectory.yaml"), "w") as f:
 
                     yaml.dump(tra, f)
 
-                with open(os.path.join(self.my_dir,"../"+ name +"_info.yaml"), "w") as f:
+                with open(os.path.join(self.my_dir,"../../../../Data/"+ name +"_info.yaml"), "w") as f:
 
                     yaml.dump(dis, f)
 
-                with open(os.path.join(self.my_dir,"../"+ name +"_result.yaml"), "w") as f:
+                with open(os.path.join(self.my_dir,"../../../../Data/"+ name +"_result.yaml"), "w") as f:
 
                     yaml.dump(d, f)
 
