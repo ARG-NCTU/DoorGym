@@ -478,7 +478,7 @@ class is_pull(smach.State):
             self.husky_cmd_pub.publish(t)
             self.arm_go_home()
             return 'pulled'
-        elif(time.time() - begin >= 60):
+        elif(time.time() - begin >= 180):
             return 'pulled'
         else:
             return 'not_yet'
@@ -526,7 +526,7 @@ class is_goal(smach.State):
             success += 1
             count += 1
             return 'navigated'
-        elif(time.time() - begin >= 60):
+        elif(time.time() - begin >= 180):
             pub_info.publish("stop")
             finish_info.publish("finished")
             count += 1
