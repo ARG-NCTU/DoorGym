@@ -116,10 +116,6 @@ If you want to train or evaluation baseline (DoorGym) or 6 joints environment, y
 
 For the trainging or evaluation
 
-If you want to train baseline (DoorGym) or 6 joints environment, you need to edit training script.
-
-For the trainging
-
   Edit train_pull.sh (run_pull.sh) or train_push.sh (run_push.sh) parameter.
 
   * DoorGym baseline
