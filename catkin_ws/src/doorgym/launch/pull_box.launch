@@ -2,15 +2,18 @@
 
 <launch>
 
-  <arg name="3dof" default="false"/>
+  <arg name="method" default="DoorGym"/>
+  <arg name="box" default="true"/>
+  <arg name="pull" default="true"/>
 
-  <group if="$(arg 3dof)">
-          <node pkg="doorgym" type="inference_3dof_pull.py" name="husky_ur5_3dof_pull_node"/>
-  </group>
+  <node pkg="doorgym" type="state_machine_ex3.py" name="experiment3_node">
+        <param name="box" value="$(arg box)"/>
+        <param name="method" value="$(arg method)"/>
+  </node>
 
-  <group unless="$(arg 3dof)">
-          <node pkg="doorgym" type="inference_pull.py" name="husky_ur5_pull_node"/>
-  </group>
-
+  <node pkg="doorgym" type="record_trajectory.py" name="record_trajectory_node" >
+      <param name="method" value="$(arg method)"/>
+      <param name="pull" value="$(arg pull)"/>
+  </node>
 
 </launch>

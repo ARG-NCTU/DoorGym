@@ -11,6 +11,7 @@ class record:
     def __init__(self):
 
         self.method = rospy.get_param("~method")
+        self.pull = rospy.get_param("~pull", False)
 
         self.timer = rospy.Timer(rospy.Duration(0.5), self.re_tra)
         self.fin_sub = rospy.Subscriber("/finish", String, self.fin_cb, queue_size = 1)
@@ -31,9 +32,15 @@ class record:
             self.enable = False
 
         if(msgs.data == "end"):
+
+            if(self.pull):
+                action = "_pull"
+            else:
+                action = ""
+
             tra = {'environment' : "room_door", "policy": self.method, "trajectories" : self.total_traj}
 
-            with open(os.path.join(self.my_dir,"../"+ self.method +"_trajectory.yaml"), "w") as f:
+            with open(os.path.join(self.my_dir,"../../../../Data/"+ self.method + action + "_trajectory.yaml"), "w") as f:
 
                 yaml.dump(tra, f)
 
