@@ -102,7 +102,7 @@ If you want to train baseline (DoorGym) or 6 joints environment, you need to edi
 
 For the trainging
 
-  Edit train_pull.sh (run_pull.sh) or train_push.sh (run_push.sh) parameter.
+  Edit train_pull.sh or train_push.sh parameter.
 
   * DoorGym baseline
   
