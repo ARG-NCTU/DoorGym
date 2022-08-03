@@ -38,18 +38,14 @@ finish_info = rospy.Publisher('/finish', String, queue_size=10)
 goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
 
 my_dir = os.path.abspath(os.path.dirname(__file__))
-# read yaml
-with open(os.path.join(my_dir,"../../../../Data/goal.yaml"), 'r') as f:
-    data = yaml.load(f)
 
-goal_totoal = data['goal']
+
 goal = []
 
 enable = False
 
 # metric
 count = 0
-total = len(goal_totoal)
 success = 0
 coi = 0
 
@@ -79,7 +75,7 @@ class loop(smach.State):
             # output result 
             d = {'success_rate':s_r, "fail_rate":f_r, "average_coillision":a_c}
 
-            with open(os.path.join(my_dir,"../../../../Data/" + method + obj + "_pull_result.yaml"), "w") as f:
+            with open(os.path.join(my_dir,"../../../../Config/" + method + obj + "_pull_result.yaml"), "w") as f:
                 yaml.dump(d, f)
 
             finish_info.publish("end")
@@ -87,7 +83,7 @@ class loop(smach.State):
             rospy.loginfo('End')
             return 'loop_done'
         else:
-            goal = goal_totoal[count]
+            goal = goal_total[count]['goal'][0:2]
             return 'looping'
 
 class init(smach.State):
@@ -110,8 +106,8 @@ class init(smach.State):
             # req = SetModelStateRequest()
             req = ModelState()
             req.model_name = 'robot'
-            req.pose.position.x = 9.0 
-            req.pose.position.y = 14.2
+            req.pose.position.x = goal_total[count]['start'][0]
+            req.pose.position.y = goal_total[count]['start'][1]
             req.pose.position.z = 0.1323
             req.pose.orientation.x = 0.0
             req.pose.orientation.y = 0.0
@@ -139,8 +135,8 @@ class init(smach.State):
             # req = SetModelStateRequest()
             req = ModelState()
             req.model_name = 'robot'
-            req.pose.position.x = 9.0 
-            req.pose.position.y = 13.5
+            req.pose.position.x = goal_total[count]['start'][0]
+            req.pose.position.y = goal_total[count]['start'][1]
             req.pose.position.z = 0.1323
             req.pose.orientation.x = 0.0
             req.pose.orientation.y = 0.0
@@ -171,7 +167,6 @@ class init(smach.State):
         self.arm_home_srv()
 
         return 'init_done'
-
 
 class pull(smach.State):
     def __init__(self):
@@ -489,14 +484,14 @@ class Navigation(smach.State):
 
     def execute(self, userdata):
 
-        global goal_totoal, count
+        global goal_total, count
 
         # publish goal to tare
         pose = PoseStamped()
 
         pose.header.frame_id = "map"
-        pose.pose.position.x = goal_totoal[count][0]
-        pose.pose.position.y = goal_totoal[count][1]
+        pose.pose.position.x = goal_total[count]['goal'][0]
+        pose.pose.position.y = goal_total[count]['goal'][1]
 
         goal_pub.publish(pose)
 
@@ -512,9 +507,9 @@ class is_goal(smach.State):
     def execute(self, userdata):
 
         global success, begin
-        global goal_totoal, count
+        global goal_total, count
 
-        self.goal = np.array([goal_totoal[count][0], goal_totoal[count][1]]) 
+        self.goal = np.array([goal_total[count]['goal'][0], goal_total[count]['goal'][1]]) 
         robot_pose = self.get_robot_pos("robot","")
 
         x, y = robot_pose.pose.position.x, robot_pose.pose.position.y
@@ -540,10 +535,22 @@ def main():
 
     sm = smach.StateMachine(outcomes=['end'])
 
-    global method, box
+    global method, box, goal_total, total
 
     method = rospy.get_param("~method")
     box = rospy.get_param("~box")
+
+    if(box):
+        # read yaml
+        with open(os.path.join(my_dir,"../../../../Config/goal_ex3_box.yaml"), 'r') as f:
+            data = yaml.load(f)
+    else:
+        # read yaml
+        with open(os.path.join(my_dir,"../../../../Config/goal_ex3_cardboard.yaml"), 'r') as f:
+            data = yaml.load(f)
+
+    goal_total = data['pairs']
+    total = len(goal_total)
 
     with sm:
         smach.StateMachine.add('loop', loop(), transitions={'looping':'init', 'loop_done':'end'})

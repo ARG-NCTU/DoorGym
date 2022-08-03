@@ -6,7 +6,6 @@
   <arg name="dof" default="false"/>
   <arg name="state" default="false"/>
   <arg name="method" default="DoorGym"/>
-  <arg name="times" default="10" />
 
   <group if="$(arg state)">
     
@@ -24,14 +23,12 @@
 
     <group if="$(arg ur5)">
       <node pkg="doorgym" type="inference.py" name="husky_ur5_push_node" output="screen">
-        <param name="times" value="$(arg times)" />
         <param name="dof" value="$(arg dof)" />
       </node>
     </group>
 
     <group unless="$(arg ur5)">
       <node pkg="doorgym" type="inference_vx300s.py" name="husky_vx300s_node" output="screen">
-        <param name="times" value="$(arg times)" />
         <param name="dof" value="$(arg dof)" />
       </node>
     </group>
