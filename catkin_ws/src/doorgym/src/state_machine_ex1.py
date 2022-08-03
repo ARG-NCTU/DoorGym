@@ -420,7 +420,7 @@ class is_goal(smach.State):
             success += 1
             count += 1
             return 'navigated'
-        elif(time.time() - begin >= 70):
+        elif(time.time() - begin >= 180):
             finish_info.publish("finished")
             count += 1
             return 'navigated'
