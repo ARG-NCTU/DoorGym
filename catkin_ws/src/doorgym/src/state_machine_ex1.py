@@ -39,10 +39,10 @@ goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
 
 my_dir = os.path.abspath(os.path.dirname(__file__))
 # read yaml
-with open(os.path.join(my_dir,"../../../../Data/goal.yaml"), 'r') as f:
+with open(os.path.join(my_dir,"../../../../Config/goal_ex1.yaml"), 'r') as f:
     data = yaml.load(f)
 
-goal_totoal = data['goal']
+goal_totoal = data['pairs']
 goal = []
 
 # metric
@@ -72,7 +72,7 @@ class loop(smach.State):
             # output result 
             d = {'success_rate':s_r, "fail_rate":f_r, "average_coillision":a_c}
 
-            with open(os.path.join(my_dir,"../../../../Data/" + method + "_result.yaml"), "w") as f:
+            with open(os.path.join(my_dir,"../../../../Config/" + method + "_result.yaml"), "w") as f:
                 yaml.dump(d, f)
 
             finish_info.publish("end")
@@ -80,7 +80,8 @@ class loop(smach.State):
             rospy.loginfo('End')
             return 'loop_done'
         else:
-            goal = goal_totoal[count]
+            # set goal
+            goal = goal_totoal[count]['goal'][0:2]
             return 'looping'
 
 class init(smach.State):
@@ -92,7 +93,7 @@ class init(smach.State):
 
     def execute(self, userdata):
 
-        global begin
+        global begin, count
 
         begin = time.time()
         rospy.loginfo("init position")
@@ -100,8 +101,8 @@ class init(smach.State):
         # req = SetModelStateRequest()
         req = ModelState()
         req.model_name = 'robot'
-        req.pose.position.x = random.uniform(7.0, 11.0)
-        req.pose.position.y = 17.0
+        req.pose.position.x = goal_totoal[count]['start'][0]
+        req.pose.position.y = goal_totoal[count]['start'][1]
         req.pose.position.z = 0.1323
         req.pose.orientation.x = 0.0
         req.pose.orientation.y = 0.0
@@ -388,8 +389,8 @@ class Navigation(smach.State):
         pose = PoseStamped()
 
         pose.header.frame_id = "map"
-        pose.pose.position.x = goal_totoal[count][0]
-        pose.pose.position.y = goal_totoal[count][1]
+        pose.pose.position.x = goal_totoal[count]['goal'][0]
+        pose.pose.position.y = goal_totoal[count]['goal'][1]
 
         goal_pub.publish(pose)
 
@@ -407,7 +408,7 @@ class is_goal(smach.State):
         global success, begin
         global goal_totoal, count
 
-        self.goal = np.array([goal_totoal[count][0], goal_totoal[count][1]]) 
+        self.goal = np.array([goal_totoal[count]['goal'][0], goal_totoal[count]['goal'][1]]) 
         robot_pose = self.get_robot_pos("robot","")
 
         x, y = robot_pose.pose.position.x, robot_pose.pose.position.y
@@ -419,7 +420,7 @@ class is_goal(smach.State):
             success += 1
             count += 1
             return 'navigated'
-        elif(time.time() - begin >= 180):
+        elif(time.time() - begin >= 70):
             finish_info.publish("finished")
             count += 1
             return 'navigated'

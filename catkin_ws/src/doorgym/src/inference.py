@@ -18,6 +18,7 @@ from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
 from arm_operation.srv import * 
 from arm_operation.msg import *
+from gazebo_msgs.msg import *
 from gazebo_msgs.srv import *
 from ur5_bringup.srv import *
 from gazebo_msgs.msg import ContactsState
@@ -26,17 +27,7 @@ import yaml
 
 class Inference:
     def __init__(self):
-
-        times = rospy.get_param("~times")
         self.dof = rospy.get_param("~dof")
-
-        # metric
-        self.count = 0
-        self.total = times
-        self.success = 0
-        self.coi = 0
-        self.cnt = 0
-        self.collision_states = False
 
         self.joint_state_sub = rospy.Subscriber("/robot/joint_states", JointState, self.joint_state_cb, queue_size = 1)
         self.husky_vel_sub = rospy.Subscriber("/robot/cmd_vel", Twist, self.husky_vel_cb, queue_size=1)
@@ -46,10 +37,11 @@ class Inference:
         self.goto_pose_srv = rospy.ServiceProxy("/robot/ur5_control_server/ur_control/goto_pose", target_pose)
         self.get_door_angle_srv = rospy.ServiceProxy("/gazebo/get_joint_properties", GetJointProperties)
         self.get_pose_srv = rospy.ServiceProxy("/robot/ur5/get_pose", cur_pose)
-        self.ran = rospy.ServiceProxy("husky_ur5/random", Trigger)
         self.arm_go_home = rospy.ServiceProxy("/robot/ur5/go_home", Trigger)
         self.sub_collision = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision, queue_size=1)
         self.get_robot_pos = rospy.ServiceProxy("/gazebo/get_model_state", GetModelState)
+        self.set_init_pose_srv = rospy.ServiceProxy("/gazebo/set_model_state", SetModelState)
+        self.set_door_srv = rospy.ServiceProxy("/gazebo/set_model_configuration", SetModelConfiguration)
         self.joint = np.zeros(23)
         self.dis = 0
         self.listener = tf.TransformListener()
@@ -57,6 +49,22 @@ class Inference:
         self.total_state = []
         self.total_action = []
         self.total_tra = []
+
+        self.my_dir = os.path.abspath(os.path.dirname(__file__))
+
+        # read yaml
+        with open(os.path.join(self.my_dir,"../../../../Config/goal_ex2.yaml"), 'r') as f:
+            data = yaml.load(f)
+
+        self.goal_total = data["pairs"]
+
+        # metric
+        self.count = 0
+        self.total = len(self.goal_total)
+        self.success = 0
+        self.coi = 0
+        self.cnt = 0
+        self.collision_states = False
         
         if(self.dof):
             # 3 dof
@@ -70,16 +78,11 @@ class Inference:
         self.actor_critic.to("cuda:0")
         self.recurrent_hidden_states = torch.zeros(1, self.actor_critic.recurrent_hidden_state_size)
 
-        self.my_dir = os.path.abspath(os.path.dirname(__file__))
-
         self.loop()
 
     def loop(self):
 
         while(1):
-
-            # initial
-            self.ran()
 
             if(self.count == self.total):
                 # finish all goal
@@ -102,21 +105,41 @@ class Inference:
 
                 tra = {'environment' : "room_door", "policy": name + ".pt", "trajectories" : self.total_tra}
 
-                with open(os.path.join(self.my_dir,"../../../../Data/"+ name +"_trajectory.yaml"), "w") as f:
+                with open(os.path.join(self.my_dir,"../../../../Config/"+ name +"_trajectory.yaml"), "w") as f:
 
                     yaml.dump(tra, f)
 
-                with open(os.path.join(self.my_dir,"../../../../Data/"+ name +"_info.yaml"), "w") as f:
+                with open(os.path.join(self.my_dir,"../../../../Config/"+ name +"_info.yaml"), "w") as f:
 
                     yaml.dump(dis, f)
 
-                with open(os.path.join(self.my_dir,"../../../../Data/"+ name +"_result.yaml"), "w") as f:
+                with open(os.path.join(self.my_dir,"../../../../Config/"+ name +"_result.yaml"), "w") as f:
 
                     yaml.dump(d, f)
 
                 rospy.loginfo('End')
                 break
             else:
+
+                req = ModelState()
+                req.model_name = 'robot'
+                req.pose.position.x = self.goal_total[self.count]['start'][0]
+                req.pose.position.y = self.goal_total[self.count]['start'][1]
+                req.pose.position.z = 0.1323
+                req.pose.orientation.x = 0.0
+                req.pose.orientation.y = 0.0
+                req.pose.orientation.z = -0.707
+                req.pose.orientation.w = 0.707
+
+                # set robot
+                self.set_init_pose_srv(req)
+
+                # set door 
+                self.set_door_srv("hinge_door_0", "", ["hinge"], [0])
+
+                # set arm
+                self.arm_go_home()
+
                 self.count += 1
 
                 if(self.dof):
