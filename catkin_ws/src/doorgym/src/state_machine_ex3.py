@@ -189,6 +189,9 @@ class pull(smach.State):
         self.joint_value = joint_value()
         self.collision_states = False
 
+        if not os.path.exists(os.path.join(my_dir,'../../../../model')): 
+            os.makedirs(os.path.join(my_dir,'../../../../model'))
+
         if(method == "DoorGym"):
             model_path = DoorGym_gazebo_utils.download_model("1oNRt9NG6_KVVaLtRprA0LW-jvEgJYBSf", "../DoorGym", "ur5_pull")
         elif(method == "RL_mm"):

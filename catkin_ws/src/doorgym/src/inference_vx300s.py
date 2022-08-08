@@ -49,6 +49,9 @@ class Inference:
 
         self.my_dir = os.path.abspath(os.path.dirname(__file__))
 
+        if not os.path.exists(os.path.join(self.my_dir,'../../../../model')): 
+            os.makedirs(os.path.join(self.my_dir,'../../../../model'))
+
         # read yaml
         with open(os.path.join(self.my_dir,"../../../../Config/goal_ex2.yaml"), 'r') as f:
             data = yaml.load(f)
