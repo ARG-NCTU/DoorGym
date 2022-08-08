@@ -65,6 +65,9 @@ class Inference:
         self.coi = 0
         self.cnt = 0
         self.collision_states = False
+
+        if not os.path.exists(os.path.join(self.my_dir,'../../../../model')): 
+            os.makedirs(os.path.join(self.my_dir,'../../../../model'))
         
         if(self.dof):
             # 3 dof
