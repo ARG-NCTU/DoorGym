@@ -8,6 +8,7 @@ from std_msgs.msg import String
 from gazebo_msgs.srv import *
 from gazebo_msgs.msg import *
 import random
+from geometry_msgs.msg import PoseStamped
 
 ran = random.uniform(0.0, 1.0)
 
@@ -22,18 +23,24 @@ class init:
             self.goal = np.array([8.0, 8.52])
 
         self.get_robot_pos = rospy.ServiceProxy("/gazebo/get_model_state", GetModelState)
+        self.goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
         self.reach_state = rospy.Publisher("/reach_goal_state", String, queue_size=1)
         self.reach_state.publish("not_yet")
         rospy.Service("/check_goal", Trigger, self.check_goal)
 
     def check_goal(self, req):
 
-        res = TriggerResponse()
+        # publish goal to tare
+        pose = PoseStamped()
 
-        if(ran <= 0.5):
-            self.pub_info.publish("nav_goal_1")
-        else:
-            self.pub_info.publish("nav_goal_2")
+        pose.header.frame_id = "map"
+        pose.pose.position.x = self.goal[0]
+        pose.pose.position.y = self.goal[1]
+
+        self.goal_pub.publish(pose)
+
+        res = TriggerResponse()
+        self.pub_info.publish("nav")
 
         robot_pose = self.get_robot_pos("robot","")
 

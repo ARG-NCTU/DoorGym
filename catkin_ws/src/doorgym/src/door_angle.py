@@ -7,7 +7,7 @@ from scipy.spatial.transform import Rotation as R
 from std_msgs.msg import String
 from gazebo_msgs.srv import *
 from gazebo_msgs.msg import *
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist,PoseStamped
 
 class init:
     def __init__(self):
@@ -15,14 +15,25 @@ class init:
         self.get_angle = rospy.ServiceProxy("/gazebo/get_link_state", GetLinkState)
         self.pub_cmd = rospy.Publisher("/robot/cmd_vel", Twist, queue_size=1)
         self.sub_goal = np.array([9.0, 13.0])
+        self.goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
         rospy.Service("/check_door", Trigger, self.check_door)
         self.pub_info = rospy.Publisher('/state', String, queue_size=10)
         self.reach_state = rospy.Publisher("/reach_door_state", String, queue_size=1)
         self.reach_state.publish("not_yet")
 
+
     def check_door(self, req):
 
-        self.pub_info.publish("nav_door")
+        # publish goal to tare
+        pose = PoseStamped()
+
+        pose.header.frame_id = "map"
+        pose.pose.position.x = self.sub_goal[0]
+        pose.pose.position.y = self.sub_goal[1]
+
+        self.goal_pub.publish(pose)
+
+        self.pub_info.publish("nav")
 
         res = TriggerResponse()
 
@@ -52,7 +63,7 @@ class init:
             else:
                 rospy.loginfo("goal reached")
             self.pub_cmd.publish(cmd)
-            self.pub_info.publish("nav_door")
+            self.pub_info.publish("nav")
 
         if(dis < 0.5 and yaw <= -1.45 and yaw >= -1.65):
             self.pub_info.publish("stop")
