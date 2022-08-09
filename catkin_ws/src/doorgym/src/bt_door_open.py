@@ -66,8 +66,11 @@ class Inference:
         self.joint[11:13] = msg.position[2]
         self.joint[21:23] = msg.velocity[2]
 
+        rot = [0.0,0.0,0.0,1.0]
+        trans = [0.0]
+
         try:
-            trans, rot = self.listener.lookupTransform("/base_link", "/odom", rospy.Time(0))
+            trans, rot = self.listener.lookupTransform("/base_link", "/map", rospy.Time(0))
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
             print("Service call failed: %s"%e)
 
@@ -89,6 +92,7 @@ class Inference:
         req.link_name = "hinge_door_0::knob"
 
         pos = self.get_knob_srv(req)
+        trans = [0.0, 0.0, 0.0]
 
         try:
             trans, _ = self.listener.lookupTransform("/map", "/object_link", rospy.Time(0))
