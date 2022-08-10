@@ -6,11 +6,13 @@
   <arg name="dof" default="false"/>
   <arg name="state" default="false"/>
   <arg name="method" default="DoorGym"/>
+  <arg name="yaml" default="goal_ex1.yaml" />
 
   <group if="$(arg state)">
     
     <node pkg="doorgym" type="state_machine_ex1.py" name="doorgym_node" output="screen">
       <param name="method" value="$(arg method)"/>
+      <param name="yaml" value="$(arg yaml)"/>
     </node>
 
     <node pkg="doorgym" type="record_trajectory.py" name="record_trajectory_node" >
@@ -24,12 +26,14 @@
     <group if="$(arg ur5)">
       <node pkg="doorgym" type="inference.py" name="husky_ur5_push_node" output="screen">
         <param name="dof" value="$(arg dof)" />
+        <param name="yaml" value="$(arg yaml)" />
       </node>
     </group>
 
     <group unless="$(arg ur5)">
       <node pkg="doorgym" type="inference_vx300s.py" name="husky_vx300s_node" output="screen">
         <param name="dof" value="$(arg dof)" />
+        <param name="yaml" value="$(arg yaml)" />
       </node>
     </group>
 

@@ -5,10 +5,12 @@
   <arg name="method" default="DoorGym"/>
   <arg name="box" default="true"/>
   <arg name="pull" default="true"/>
+  <arg name="yaml" default="goal_ex3_box.yaml" />
 
   <node pkg="doorgym" type="state_machine_ex3.py" name="experiment3_node" output="screen">
         <param name="box" value="$(arg box)"/>
         <param name="method" value="$(arg method)"/>
+        <param name="yaml" value="$(arg yaml)"/>
   </node>
 
   <node pkg="doorgym" type="record_trajectory.py" name="record_trajectory_node" >

@@ -26,6 +26,7 @@ class Inference:
     def __init__(self):
 
         self.dof = rospy.get_param("~dof")
+        self.yaml = rospy.get_param("~yaml")
 
         self.joint_state_sub = rospy.Subscriber("/robot/joint_states", JointState, self.joint_state_cb, queue_size = 1)
         self.husky_vel_sub = rospy.Subscriber("/robot/cmd_vel", Twist, self.husky_vel_cb, queue_size=1)
@@ -53,7 +54,7 @@ class Inference:
             os.makedirs(os.path.join(self.my_dir,'../../../../model'))
 
         # read yaml
-        with open(os.path.join(self.my_dir,"../../../../Config/goal_ex2.yaml"), 'r') as f:
+        with open(os.path.join(self.my_dir,"../../../../Config/" + self.yaml), 'r') as f:
             data = yaml.load(f)
 
         self.goal_total = data["pairs"]
