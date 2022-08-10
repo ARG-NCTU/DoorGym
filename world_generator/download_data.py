@@ -16,7 +16,7 @@ download("1hlU2BNlXSieOb4UrQiPJIpoSbivD-6Y_", "husky-ur5-pull")
 download("1sYJorv2KzqA2EvgjIj_ST09ZfKuyp1re", "husky-ur5-push")
 download("1a3NLFWjyF7ClZxxqEYEIgouk57mDMicU", "ur5-pull")
 download("1ri9udFVgK0uw3RPd6l4Ru_doTlWfmu9U", "ur5-push")
-download("1_FZJiXjkDQpzjGNa5PpllxU7pR7ApXSn", "pullkonbs")
+download("1jPBPbnM_DW-BfjmpNMx01iJX5lW4E7No", "pullkonbs")
 
 # move door model
 os.makedirs("door")
