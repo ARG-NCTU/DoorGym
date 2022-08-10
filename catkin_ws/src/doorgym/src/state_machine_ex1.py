@@ -38,16 +38,11 @@ finish_info = rospy.Publisher('/finish', String, queue_size=10)
 goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
 
 my_dir = os.path.abspath(os.path.dirname(__file__))
-# read yaml
-with open(os.path.join(my_dir,"../../../../Config/goal_ex1.yaml"), 'r') as f:
-    data = yaml.load(f)
 
-goal_totoal = data['pairs']
 goal = []
 
 # metric
 count = 0
-total = len(goal_totoal)
 success = 0
 coi = 0
 
@@ -81,7 +76,7 @@ class loop(smach.State):
             return 'loop_done'
         else:
             # set goal
-            goal = goal_totoal[count]['goal'][0:2]
+            goal = goal_total[count]['goal'][0:2]
             return 'looping'
 
 class init(smach.State):
@@ -101,8 +96,8 @@ class init(smach.State):
         # req = SetModelStateRequest()
         req = ModelState()
         req.model_name = 'robot'
-        req.pose.position.x = goal_totoal[count]['start'][0]
-        req.pose.position.y = goal_totoal[count]['start'][1]
+        req.pose.position.x = goal_total[count]['start'][0]
+        req.pose.position.y = goal_total[count]['start'][1]
         req.pose.position.z = 0.1323
         req.pose.orientation.x = 0.0
         req.pose.orientation.y = 0.0
@@ -386,14 +381,14 @@ class Navigation(smach.State):
 
     def execute(self, userdata):
 
-        global goal_totoal, count
+        global goal_total, count
 
         # publish goal to tare
         pose = PoseStamped()
 
         pose.header.frame_id = "map"
-        pose.pose.position.x = goal_totoal[count]['goal'][0]
-        pose.pose.position.y = goal_totoal[count]['goal'][1]
+        pose.pose.position.x = goal_total[count]['goal'][0]
+        pose.pose.position.y = goal_total[count]['goal'][1]
 
         goal_pub.publish(pose)
 
@@ -409,9 +404,9 @@ class is_goal(smach.State):
     def execute(self, userdata):
 
         global success, begin
-        global goal_totoal, count
+        global goal_total, count
 
-        self.goal = np.array([goal_totoal[count]['goal'][0], goal_totoal[count]['goal'][1]]) 
+        self.goal = np.array([goal_total[count]['goal'][0], goal_total[count]['goal'][1]]) 
         robot_pose = self.get_robot_pos("robot","")
 
         x, y = robot_pose.pose.position.x, robot_pose.pose.position.y
@@ -436,9 +431,17 @@ def main():
 
     sm = smach.StateMachine(outcomes=['end'])
 
-    global method
+    global method, goal_total, total
 
     method = rospy.get_param("~method")
+    yaml_file = rospy.get_param("~yaml")
+    
+    # read yaml
+    with open(os.path.join(my_dir,"../../../../Config/" + yaml_file), 'r') as f:
+        data = yaml.load(f)
+
+    goal_total = data['pairs']
+    total = len(goal_total)
 
     with sm:
         smach.StateMachine.add('loop', loop(), transitions={'looping':'init', 'loop_done':'end'})

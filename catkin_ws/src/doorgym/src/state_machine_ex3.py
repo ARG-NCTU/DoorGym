@@ -542,15 +542,11 @@ def main():
 
     method = rospy.get_param("~method")
     box = rospy.get_param("~box")
-
-    if(box):
-        # read yaml
-        with open(os.path.join(my_dir,"../../../../Config/goal_ex3_box.yaml"), 'r') as f:
-            data = yaml.load(f)
-    else:
-        # read yaml
-        with open(os.path.join(my_dir,"../../../../Config/goal_ex3_cardboard.yaml"), 'r') as f:
-            data = yaml.load(f)
+    yaml_file = rospy.get_param("~yaml")
+    
+    # read yaml
+    with open(os.path.join(my_dir,"../../../../Config/" + yaml_file), 'r') as f:
+        data = yaml.load(f)
 
     goal_total = data['pairs']
     total = len(goal_total)
