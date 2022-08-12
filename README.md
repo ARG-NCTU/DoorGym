@@ -89,37 +89,39 @@ Before ready for the above setting, then you can train a model. For the training
 * Pull task
 
   ```
+    source environment.sh
     source train_pull.sh
   ```
 
 * Push task
 
   ```
+    source environment.sh
     source train_push.sh
   ```
 
+The trained weights will store trained_model folder and log file will store logs folder, you can use tensorboard to see train curve.
+
 If you want to train baseline (DoorGym) or 6 joints environment, you need to edit training script.
 
-For the trainging
+Edit train_pull.sh or train_push.sh parameter.
 
-  Edit train_pull.sh or train_push.sh parameter.
+* DoorGym baseline
 
-  * DoorGym baseline
-  
-    ```
-    --env-name doorenv_gym-v0
-    ```
+  ```
+  --env-name doorenv_gym-v0
+  ```
 
-  * 6 joints
-  
-    ```
-    --env-name doorenv_6joints-v0
-    ```
+* 6 joints
 
-  * 3 DOF
+  ```
+  --env-name doorenv_6joints-v0
+  ```
 
-    ```
-    --env-name doorenv-V0
-    ```
+* 3 DOF
+
+  ```
+  --env-name doorenv-V0
+  ```
 
 More detailed parameters [here](https://github.com/ARG-NCTU/curl_navi/blob/master/04_DoorGym.ipynb)
