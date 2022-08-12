@@ -75,7 +75,7 @@ class loop(smach.State):
             # output result 
             d = {'success_rate':s_r, "fail_rate":f_r, "average_coillision":a_c}
 
-            with open(os.path.join(my_dir,"../../../../Config/" + method + obj + "_pull_result.yaml"), "w") as f:
+            with open(os.path.join(my_dir,"../../../../Results/" + method + obj + "_pull_result.yaml"), "w") as f:
                 yaml.dump(d, f)
 
             finish_info.publish("end")

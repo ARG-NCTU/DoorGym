@@ -47,7 +47,7 @@ class record:
 
             tra = {'environment' : "room_door", "policy": self.method, "trajectories" : self.total_traj}
 
-            with open(os.path.join(self.my_dir,"../../../../Config/"+ self.method + obj + action + "_trajectory.yaml"), "w") as f:
+            with open(os.path.join(self.my_dir,"../../../../Results/"+ self.method + obj + action + "_trajectory.yaml"), "w") as f:
 
                 yaml.dump(tra, f)
 
