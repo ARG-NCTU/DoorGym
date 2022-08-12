@@ -100,7 +100,7 @@ Before ready for the above setting, then you can train a model. For the training
     source train_push.sh
   ```
 
-The trained weights will store trained_model folder and log file will store logs folder, you can use tensorboard to see train curve.
+The trained weights will store trained_models folder and log file will store logs folder, you can use tensorboard to see train curve.
 
 If you want to train baseline (DoorGym) or 6 joints environment, you need to edit training script.
 
