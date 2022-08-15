@@ -6,11 +6,13 @@
   <arg name="box" default="true"/>
   <arg name="pull" default="true"/>
   <arg name="yaml" default="goal_ex3_box.yaml" />
+  <arg name="weight" default="husky_ur5_pull.pt" />
 
   <node pkg="doorgym" type="state_machine_ex3.py" name="experiment3_node" output="screen">
         <param name="box" value="$(arg box)"/>
         <param name="method" value="$(arg method)"/>
         <param name="yaml" value="$(arg yaml)"/>
+        <param name="weight" value="$(arg weight)"/>
   </node>
 
   <node pkg="doorgym" type="record_trajectory.py" name="record_trajectory_node" >

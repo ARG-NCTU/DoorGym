@@ -29,6 +29,7 @@ class Inference:
     def __init__(self):
         self.dof = rospy.get_param("~dof")
         self.yaml = rospy.get_param("~yaml")
+        self.weight = rospy.get_param("~weight")
 
         self.joint_state_sub = rospy.Subscriber("/robot/joint_states", JointState, self.joint_state_cb, queue_size = 1)
         self.husky_vel_sub = rospy.Subscriber("/robot/cmd_vel", Twist, self.husky_vel_cb, queue_size=1)
@@ -67,15 +68,7 @@ class Inference:
         self.cnt = 0
         self.collision_states = False
 
-        if not os.path.exists(os.path.join(self.my_dir,'../../../../model')): 
-            os.makedirs(os.path.join(self.my_dir,'../../../../model'))
-        
-        if(self.dof):
-            # 3 dof
-            model_path = DoorGym_gazebo_utils.download_model("1DR3lRWLNGRVCFsz0IYwEhwL6ZOMd9L5y", "../DoorGym", "husky_ur5_push_3dof")
-        else:
-            # 6 joints
-            model_path = DoorGym_gazebo_utils.download_model("1scp0n_AkGVTnCq80fenGHUfPdO9cwUJl", "../DoorGym", "husky_ur5_push")
+        model_path = os.path.join(self.my_dir, '../../../../model/' + self.weight)
 
         self.actor_critic = DoorGym_gazebo_utils.init_model(model_path, 23)
 
@@ -322,8 +315,8 @@ class Inference:
             self.joint_value.joint_value[1] += joint_action[3] * 0.004
             self.joint_value.joint_value[2] += joint_action[4] * 0.004
             self.joint_value.joint_value[3] += joint_action[5] * 0.001
-            self.joint_value.joint_value[4] += joint_action[6] * -0.001
-            self.joint_value.joint_value[5] += joint_action[7] * 0.001
+            self.joint_value.joint_value[4] += joint_action[6] * -0.0001
+            self.joint_value.joint_value[5] += joint_action[7] * 0.00001
             
             joint_pose_req.joints.append(self.joint_value)
             res_ = self.goto_joint_srv(joint_pose_req)

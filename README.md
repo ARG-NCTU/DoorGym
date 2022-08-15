@@ -42,6 +42,15 @@ Make sure run this command when the terminal enter docker.
 source environment.sh
 ```
 
+## Download model weight
+
+Run below command to download all model weight into model folder.
+
+```
+cd mdoel
+python3 download_weight.py
+```
+
 ## Download dataset and knob model
 
 This dataset is required for training, you can follow below command to download these.

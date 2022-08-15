@@ -205,15 +205,13 @@ class open_door(smach.State):
         
         self.collision_states = False
 
-        if not os.path.exists(os.path.join(my_dir,'../../../../model')): 
-            os.makedirs(os.path.join(my_dir,'../../../../model'))
 
         if(method == "DoorGym"):
-            model_path = DoorGym_gazebo_utils.download_model("1Vy_MAXIizJzv6i3gFNypVEekIyhaEvCH", "../DoorGym", "ur5_push")
             self.sub_collision_gym = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision_gym, queue_size=1)
         elif(method == "RL_mm"):
-            model_path = DoorGym_gazebo_utils.download_model("1scp0n_AkGVTnCq80fenGHUfPdO9cwUJl", "../DoorGym", "husky_ur5_push")
             self.sub_collision = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision, queue_size=1)
+
+        model_path = os.path.join(self.my_dir, '../../../../model/' + weight)
         
         self.actor_critic = DoorGym_gazebo_utils.init_model(model_path, 23)
 
@@ -435,6 +433,7 @@ def main():
 
     method = rospy.get_param("~method")
     yaml_file = rospy.get_param("~yaml")
+    weight = rospy.get_param("~weight")
     
     # read yaml
     with open(os.path.join(my_dir,"../../../../Config/" + yaml_file), 'r') as f:

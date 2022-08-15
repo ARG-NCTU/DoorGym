@@ -189,15 +189,7 @@ class pull(smach.State):
         self.joint_value = joint_value()
         self.collision_states = False
 
-        if not os.path.exists(os.path.join(my_dir,'../../../../model')): 
-            os.makedirs(os.path.join(my_dir,'../../../../model'))
-
-        if(method == "DoorGym"):
-            model_path = DoorGym_gazebo_utils.download_model("1oNRt9NG6_KVVaLtRprA0LW-jvEgJYBSf", "../DoorGym", "ur5_pull")
-        elif(method == "RL_mm"):
-            model_path = DoorGym_gazebo_utils.download_model("1_7QLXH7s6VgwktPWLVc0k5gzLFVla70T", "../DoorGym", "husky_ur5_pull_3dof")
-        elif(method == "6joints"):
-            model_path = DoorGym_gazebo_utils.download_model("1NQMtSp7tF8qy6RqbBvfk4GqOfN1J-Vo0", "../DoorGym", "husky_ur5_pull")
+        model_path = os.path.join(self.my_dir, '../../../../model/' + weight)
 
         self.actor_critic = DoorGym_gazebo_utils.init_model(model_path, 23)
         
@@ -543,6 +535,7 @@ def main():
     method = rospy.get_param("~method")
     box = rospy.get_param("~box")
     yaml_file = rospy.get_param("~yaml")
+    weight = rospy.get_param("~weight")
     
     # read yaml
     with open(os.path.join(my_dir,"../../../../Config/" + yaml_file), 'r') as f:

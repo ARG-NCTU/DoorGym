@@ -27,6 +27,7 @@ class Inference:
 
         self.dof = rospy.get_param("~dof")
         self.yaml = rospy.get_param("~yaml")
+        self.weight = rospy.get_param("~weight")
 
         self.joint_state_sub = rospy.Subscriber("/robot/joint_states", JointState, self.joint_state_cb, queue_size = 1)
         self.husky_vel_sub = rospy.Subscriber("/robot/cmd_vel", Twist, self.husky_vel_cb, queue_size=1)
@@ -50,9 +51,6 @@ class Inference:
 
         self.my_dir = os.path.abspath(os.path.dirname(__file__))
 
-        if not os.path.exists(os.path.join(self.my_dir,'../../../../model')): 
-            os.makedirs(os.path.join(self.my_dir,'../../../../model'))
-
         # read yaml
         with open(os.path.join(self.my_dir,"../../../../Config/" + self.yaml), 'r') as f:
             data = yaml.load(f)
@@ -67,13 +65,11 @@ class Inference:
         self.cnt = 0
         self.collision_states = False
 
+        model_path = os.path.join(self.my_dir, '../../../../model/' + self.weight)
+
         if(self.dof):
-            # 3 dof
-            model_path = DoorGym_gazebo_utils.download_model("1DR3lRWLNGRVCFsz0IYwEhwL6ZOMd9L5y", "../DoorGym", "husky_ur5_push_3dof")
             self.sub_collision_dof = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision_dof, queue_size=1)
         else:
-            # 6 joints
-            model_path = DoorGym_gazebo_utils.download_model("1scp0n_AkGVTnCq80fenGHUfPdO9cwUJl", "../DoorGym", "husky_ur5_push")
             self.sub_collision = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision, queue_size=1)
 
         self.actor_critic = DoorGym_gazebo_utils.init_model(model_path, 23)
