@@ -211,7 +211,7 @@ class open_door(smach.State):
         elif(method == "RL_mm"):
             self.sub_collision = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision, queue_size=1)
 
-        model_path = os.path.join(self.my_dir, '../../../../model/' + weight)
+        model_path = os.path.join(my_dir, '../../../../model/' + weight)
         
         self.actor_critic = DoorGym_gazebo_utils.init_model(model_path, 23)
 

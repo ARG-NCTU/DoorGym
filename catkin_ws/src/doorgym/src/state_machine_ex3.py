@@ -189,7 +189,7 @@ class pull(smach.State):
         self.joint_value = joint_value()
         self.collision_states = False
 
-        model_path = os.path.join(self.my_dir, '../../../../model/' + weight)
+        model_path = os.path.join(my_dir, '../../../../model/' + weight)
 
         self.actor_critic = DoorGym_gazebo_utils.init_model(model_path, 23)
         
