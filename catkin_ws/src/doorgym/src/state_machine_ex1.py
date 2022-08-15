@@ -209,7 +209,9 @@ class open_door(smach.State):
         if(method == "DoorGym"):
             self.sub_collision_gym = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision_gym, queue_size=1)
         elif(method == "RL_mm"):
-            self.sub_collision = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision, queue_size=1)
+            self.sub_collision = rospy.Subscriber("/robot/bumper_states", ContactsState, self.cb_collision, queue_size=1)  
+
+    def execute(self, userdata):
 
         model_path = os.path.join(my_dir, '../../../../model/' + weight)
         
@@ -217,8 +219,6 @@ class open_door(smach.State):
 
         self.actor_critic.to("cuda:0")
         self.recurrent_hidden_states = torch.zeros(1, self.actor_critic.recurrent_hidden_state_size)
-
-    def execute(self, userdata):
 
         self.get_distance()
         joint_pose_req = joint_poseRequest()
@@ -429,7 +429,7 @@ def main():
 
     sm = smach.StateMachine(outcomes=['end'])
 
-    global method, goal_total, total
+    global method, goal_total, total, weight
 
     method = rospy.get_param("~method")
     yaml_file = rospy.get_param("~yaml")

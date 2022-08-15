@@ -39,7 +39,6 @@ goal_pub = rospy.Publisher("/tare/goal", PoseStamped, queue_size=1)
 
 my_dir = os.path.abspath(os.path.dirname(__file__))
 
-
 goal = []
 
 enable = False
@@ -189,16 +188,18 @@ class pull(smach.State):
         self.joint_value = joint_value()
         self.collision_states = False
 
+        
+
+    def execute(self, userdata):
+
+        global enable
+
         model_path = os.path.join(my_dir, '../../../../model/' + weight)
 
         self.actor_critic = DoorGym_gazebo_utils.init_model(model_path, 23)
         
         self.actor_critic.to("cuda:0")
         self.recurrent_hidden_states = torch.zeros(1, self.actor_critic.recurrent_hidden_state_size)
-
-    def execute(self, userdata):
-
-        global enable
 
         finish_info.publish("start")
 
@@ -530,7 +531,7 @@ def main():
 
     sm = smach.StateMachine(outcomes=['end'])
 
-    global method, box, goal_total, total
+    global method, box, goal_total, total, weight
 
     method = rospy.get_param("~method")
     box = rospy.get_param("~box")
