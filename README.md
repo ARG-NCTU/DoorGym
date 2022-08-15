@@ -47,7 +47,7 @@ source environment.sh
 Run below command to download all model weight into model folder.
 
 ```
-cd mdoel
+cd model
 python3 download_weight.py
 ```
 
