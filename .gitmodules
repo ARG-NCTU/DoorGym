@@ -4,3 +4,6 @@
 [submodule "ikfastpy"]
 	path = ikfastpy
 	url = git@github.com:ARG-NCTU/ikfastpy.git
+[submodule "catkin_ws/src/husky_ur5"]
+	path = catkin_ws/src/husky_ur5
+	url = git@github.com:ARG-NCTU/semi-obs-navigation.git
